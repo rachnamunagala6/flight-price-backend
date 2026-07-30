@@ -1,0 +1,52 @@
+name: Run Backend
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: Branch to check out and run
+        required: true
+        default: main
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    # Secrets (SERPAPI_KEY, ANTHROPIC_API_KEY, DATABASE_URL) live on this
+    # environment, not as plain repo secrets -- Render's GitHub integration
+    # created it.
+    environment: main - flight-price-backend
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - run: npm ci
+
+      - name: Boot server with real secrets
+        env:
+          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          node server.js &
+          SERVER_PID=$!
+          for i in $(seq 1 15); do
+            curl -sf http://localhost:3000/health >/dev/null && break
+            sleep 1
+          done
+          curl -sf http://localhost:3000/health
+          curl -sf -o /dev/null http://localhost:3000/
+
+          echo "--- /api/price ---"
+          curl -sf "http://localhost:3000/api/price?from=DEN&to=AUS&depart=2027-03-14&ret=2027-03-21"
+
+          kill $SERVER_PID
