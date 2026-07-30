@@ -34,3 +34,5 @@ database, etc.) — that's also what Render runs in production.
 ## Reporting bugs / proposing features
 
 Use GitHub Issues on this repo.
+
+<!-- test commit: verifying branch protection setup, safe to delete -->
