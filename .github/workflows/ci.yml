@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - run: npm ci
+      - run: npm test
+
+      # Boots the server with no env vars set (mirrors a fresh checkout) and
+      # confirms it comes up and serves the front end, instead of crashing.
+      # It's expected to warn about missing SERPAPI_KEY/ANTHROPIC_API_KEY/
+      # DATABASE_URL -- those aren't available in CI and that's fine, this
+      # only checks the server boots and the static app is reachable.
+      - name: Smoke test server boot
+        run: |
+          node server.js &
+          SERVER_PID=$!
+          for i in $(seq 1 15); do
+            curl -sf http://localhost:3000/health >/dev/null && break
+            sleep 1
+          done
+          curl -sf http://localhost:3000/health
+          curl -sf -o /dev/null http://localhost:3000/
+          kill $SERVER_PID
