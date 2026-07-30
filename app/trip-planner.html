@@ -1,0 +1,1009 @@
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --ink:#12233B;
+    --panel:#1B3253;
+    --panel-2:#20395D;
+    --paper:#E9E3D3;
+    --paper-dim:#c9c2ad;
+    --amber:#E8A33D;
+    --coral:#E2593F;
+    --green:#4FA37B;
+    --line:rgba(233,227,211,0.14);
+  }
+  *{box-sizing:border-box;}
+  #tp-root{
+    font-family:'IBM Plex Sans',sans-serif;
+    background:var(--ink);
+    color:var(--paper);
+    min-height:100%;
+    padding:0;
+    -webkit-font-smoothing:antialiased;
+  }
+  #tp-root .disp{font-family:'Space Grotesk',sans-serif;}
+  #tp-root .mono{font-family:'IBM Plex Mono',monospace;}
+  #tp-root button{font-family:inherit;cursor:pointer;}
+  #tp-root input,#tp-root select{font-family:inherit;}
+
+  .tp-shell{max-width:760px;margin:0 auto;padding:28px 18px 60px;}
+
+  .tp-hero{
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:24px 22px;
+    background:linear-gradient(160deg, var(--panel) 0%, var(--ink) 100%);
+    margin-bottom:22px;
+    position:relative;
+    overflow:hidden;
+  }
+  .tp-eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--amber);
+    margin-bottom:8px;
+  }
+  .tp-hero h1{
+    font-size:28px;
+    font-weight:600;
+    margin:0 0 6px;
+    letter-spacing:-0.01em;
+  }
+  .tp-hero p{margin:0;color:var(--paper-dim);font-size:14.5px;line-height:1.5;}
+
+  .tp-card{
+    border:1px solid var(--line);
+    border-radius:12px;
+    background:var(--panel);
+    padding:20px;
+    margin-bottom:16px;
+  }
+  .tp-card h2{
+    font-size:15px;font-weight:600;margin:0 0 14px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .tp-card h2 .num{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;color:var(--amber);
+    border:1px solid var(--amber);
+    border-radius:20px;padding:1px 8px;
+  }
+
+  .tp-btn{
+    background:var(--amber);color:var(--ink);border:none;
+    padding:11px 18px;border-radius:8px;font-weight:600;font-size:14px;
+    transition:transform .1s ease, background .15s ease;
+  }
+  .tp-btn:hover{background:#f0b355;}
+  .tp-btn:active{transform:scale(0.97);}
+  .tp-btn:disabled{opacity:.5;cursor:not-allowed;}
+  .tp-btn.ghost{
+    background:transparent;color:var(--paper);border:1px solid var(--line);
+  }
+  .tp-btn.ghost:hover{border-color:var(--amber);color:var(--amber);}
+  .tp-btn.small{padding:7px 12px;font-size:12.5px;border-radius:6px;}
+
+  .tp-field{margin-bottom:12px;}
+  .tp-field label{display:block;font-size:12px;color:var(--paper-dim);margin-bottom:5px;letter-spacing:.02em;}
+  .tp-field input, .tp-field select{
+    width:100%;padding:10px 12px;border-radius:7px;
+    border:1px solid var(--line);background:var(--ink);color:var(--paper);
+    font-size:14.5px;outline:none;
+  }
+  .tp-field input:focus, .tp-field select:focus{border-color:var(--amber);}
+
+  .tp-row{display:flex;gap:10px;}
+  .tp-row > *{flex:1;}
+
+  .tp-choice{
+    display:grid;grid-template-columns:1fr 1fr;gap:12px;
+  }
+  .tp-choice-card{
+    border:1px solid var(--line);border-radius:10px;padding:18px 14px;
+    text-align:center;background:var(--panel-2);
+  }
+  .tp-choice-card h3{margin:0 0 4px;font-size:14.5px;}
+  .tp-choice-card p{margin:0 0 12px;font-size:12px;color:var(--paper-dim);line-height:1.4;}
+
+  .tp-code-badge{
+    font-family:'IBM Plex Mono',monospace;font-size:20px;letter-spacing:.12em;
+    background:var(--ink);border:1px dashed var(--amber);color:var(--amber);
+    padding:10px 16px;border-radius:8px;display:inline-block;
+  }
+
+  .tp-members{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;}
+  .tp-chip{
+    display:flex;align-items:center;gap:6px;
+    background:var(--panel-2);border:1px solid var(--line);
+    padding:6px 10px 6px 6px;border-radius:20px;font-size:12.5px;
+  }
+  .tp-avatar{
+    width:20px;height:20px;border-radius:50%;
+    background:var(--amber);color:var(--ink);
+    display:flex;align-items:center;justify-content:center;
+    font-size:10px;font-weight:700;
+  }
+
+  .tp-dest-card{
+    border:1px solid var(--line);border-radius:12px;background:var(--panel);
+    margin-bottom:14px;overflow:hidden;
+  }
+  .tp-dest-top{padding:16px 18px 6px;}
+  .tp-dest-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+  .tp-dest-head h3{margin:0;font-size:17px;font-weight:600;}
+  .tp-season{
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--amber);
+    text-transform:uppercase;letter-spacing:.08em;
+  }
+  .tp-best-badge{
+    background:var(--green);color:var(--ink);font-size:10.5px;font-weight:700;
+    padding:3px 9px;border-radius:20px;font-family:'IBM Plex Mono',monospace;
+    letter-spacing:.04em;white-space:nowrap;
+  }
+
+  .tp-dest-body{display:flex;gap:16px;padding:8px 18px 18px;flex-wrap:wrap;}
+  .tp-diagram{flex-shrink:0;width:150px;height:150px;}
+  .tp-price-list{flex:1;min-width:200px;}
+  .tp-price-row{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:6px 0;border-bottom:1px solid var(--line);font-size:13px;
+    gap:8px;
+  }
+  .tp-price-row:last-child{border-bottom:none;}
+  .tp-price-name{display:flex;align-items:center;gap:7px;color:var(--paper-dim);}
+  .tp-price-val{font-family:'IBM Plex Mono',monospace;display:flex;align-items:center;gap:6px;}
+  .tp-price-input{
+    width:66px;background:var(--ink);border:1px solid var(--line);
+    border-radius:5px;color:var(--paper);font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;padding:3px 6px;text-align:right;
+  }
+  .tp-price-input:focus{outline:none;border-color:var(--amber);}
+  .tp-src-tag{font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:var(--paper-dim);opacity:.7;}
+
+  .tp-totals{
+    display:flex;justify-content:space-between;align-items:baseline;
+    padding:12px 18px;border-top:1px solid var(--line);background:var(--ink);
+  }
+  .tp-total-num{font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:600;color:var(--amber);}
+  .tp-total-label{font-size:11px;color:var(--paper-dim);text-transform:uppercase;letter-spacing:.06em;}
+
+  .tp-empty{
+    text-align:center;padding:30px 20px;color:var(--paper-dim);font-size:13.5px;
+    border:1px dashed var(--line);border-radius:10px;
+  }
+
+  .tp-topbar{
+    display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;
+  }
+  .tp-topbar .code{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--paper-dim);}
+  .tp-topbar .code b{color:var(--amber);}
+
+  .tp-perf{
+    border-top:1px dashed var(--line);margin:16px 0;position:relative;
+  }
+
+  .tp-err{color:var(--coral);font-size:12.5px;margin-top:8px;}
+  .tp-loading{font-size:12px;color:var(--paper-dim);font-family:'IBM Plex Mono',monospace;}
+
+  .tp-suggest-card{
+    border:1px solid var(--line);border-radius:10px;background:var(--panel-2);
+    padding:14px 16px;margin-bottom:10px;display:flex;justify-content:space-between;
+    align-items:center;gap:12px;
+  }
+  .tp-suggest-card h4{margin:0 0 3px;font-size:14.5px;font-weight:600;}
+  .tp-suggest-card p{margin:0;font-size:12px;color:var(--paper-dim);line-height:1.4;}
+
+  @media (max-width:480px){
+    .tp-choice{grid-template-columns:1fr;}
+    .tp-dest-body{flex-direction:column;align-items:center;}
+    .tp-price-list{width:100%;}
+  }
+</style>
+
+<div id="tp-root"></div>
+
+<script>
+(function(){
+  const root = document.getElementById('tp-root');
+  const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+  function todayISO(offsetDays){
+    const d = new Date();
+    d.setDate(d.getDate() + (offsetDays||0));
+    return d.toISOString().slice(0,10);
+  }
+  function parseISO(s){
+    const [y,m,day] = s.split('-').map(Number);
+    return new Date(y, m-1, day);
+  }
+  function formatDateRange(startStr, endStr){
+    if(!startStr || !endStr) return 'Dates TBD';
+    const s = parseISO(startStr), e = parseISO(endStr);
+    const sameMonth = s.getMonth()===e.getMonth() && s.getFullYear()===e.getFullYear();
+    const sameYear = s.getFullYear()===e.getFullYear();
+    if(sameMonth){
+      return `${MONTHS[s.getMonth()]} ${s.getDate()}–${e.getDate()}, ${e.getFullYear()}`;
+    }
+    if(sameYear){
+      return `${MONTHS[s.getMonth()]} ${s.getDate()} – ${MONTHS[e.getMonth()]} ${e.getDate()}, ${e.getFullYear()}`;
+    }
+    return `${MONTHS[s.getMonth()]} ${s.getDate()}, ${s.getFullYear()} – ${MONTHS[e.getMonth()]} ${e.getDate()}, ${e.getFullYear()}`;
+  }
+
+  let state = {
+    view: 'loading', // loading | landing | create | join | trip
+    code: null,
+    group: null, // {name, members, destinations, estimates}
+    myId: null,
+    error: null,
+    busyDest: null,
+    suggestions: [],
+    suggestLoading: false,
+    suggestLoadingStage: '',
+    suggestStartDate: todayISO(30),
+    suggestEndDate: todayISO(37),
+    backendStatus: null,
+  };
+
+  function setState(patch){ state = {...state, ...patch}; render(); }
+
+  function uid(){ return Math.random().toString(36).slice(2,9); }
+  function genCode(){
+    const letters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let c=''; for(let i=0;i<5;i++) c+=letters[Math.floor(Math.random()*letters.length)];
+    return c;
+  }
+  function initials(name){
+    return name.trim().split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase();
+  }
+
+  async function loadGroup(code){
+    try{
+      const res = await window.storage.get('group:'+code, true);
+      return res ? JSON.parse(res.value) : null;
+    }catch(e){ return null; }
+  }
+  async function saveGroup(code, group){
+    await window.storage.set('group:'+code, JSON.stringify(group), true);
+  }
+  async function getMyId(code){
+    try{
+      const res = await window.storage.get('myid:'+code, false);
+      return res ? res.value : null;
+    }catch(e){ return null; }
+  }
+  async function setMyId(code, id){
+    await window.storage.set('myid:'+code, id, false);
+  }
+
+  async function init(){
+    try{
+      const last = await window.storage.get('last-code', false);
+      if(last && last.value){
+        const g = await loadGroup(last.value);
+        if(g){
+          const myId = await getMyId(last.value);
+          if(myId && g.members.find(m=>m.id===myId)){
+            setState({view:'trip', code:last.value, group:g, myId});
+            return;
+          }
+        }
+      }
+    }catch(e){}
+    setState({view:'landing'});
+  }
+
+  // ---------- Actions ----------
+
+  async function createTrip(tripName, myName, myCity, myAirport){
+    const code = genCode();
+    const me = {id: uid(), name: myName, city: myCity, airport: (myAirport||'').toUpperCase()};
+    const group = {
+      name: tripName,
+      createdAt: Date.now(),
+      members: [me],
+      destinations: [],
+      estimates: {},
+      backendUrl: ''
+    };
+    await saveGroup(code, group);
+    await setMyId(code, me.id);
+    await window.storage.set('last-code', code, false);
+    setState({view:'trip', code, group, myId: me.id});
+  }
+
+  async function joinTrip(code, myName, myCity, myAirport){
+    code = code.trim().toUpperCase();
+    const g = await loadGroup(code);
+    if(!g){ setState({error:"Couldn't find a trip with that code. Double check it and try again."}); return; }
+    const me = {id: uid(), name: myName, city: myCity, airport: (myAirport||'').toUpperCase()};
+    g.members.push(me);
+    if(g.backendUrl===undefined) g.backendUrl = '';
+    await saveGroup(code, g);
+    await setMyId(code, me.id);
+    await window.storage.set('last-code', code, false);
+    setState({view:'trip', code, group:g, myId: me.id, error:null});
+  }
+
+  async function setBackendUrl(url){
+    const g = {...state.group};
+    g.backendUrl = url.trim();
+    await saveGroup(state.code, g);
+    setState({group:g, backendStatus:null});
+  }
+
+  async function testBackend(url){
+    setState({backendStatus:'checking'});
+    try{
+      const res = await fetch(url.replace(/\/$/,'') + '/health');
+      if(!res.ok) throw new Error();
+      const data = await res.json();
+      setState({backendStatus: data.hasKey ? 'ok' : 'ok-no-key'});
+    }catch(e){
+      setState({backendStatus:'fail'});
+    }
+  }
+
+  async function refreshGroup(){
+    const g = await loadGroup(state.code);
+    if(g) setState({group:g});
+  }
+
+  async function addDestination(name, startDate, endDate, notes, airport){
+    const g = {...state.group};
+    const dest = {id: uid(), name, startDate, endDate, notes, airport: (airport||'').toUpperCase()};
+    g.destinations = [...g.destinations, dest];
+    await saveGroup(state.code, g);
+    setState({group:g});
+    return dest;
+  }
+
+  async function removeDestination(destId){
+    const g = {...state.group};
+    g.destinations = g.destinations.filter(d=>d.id!==destId);
+    await saveGroup(state.code, g);
+    setState({group:g});
+  }
+
+  async function setManualPrice(destId, memberId, price){
+    const g = {...state.group};
+    const key = destId+':'+memberId;
+    g.estimates = {...g.estimates, [key]: {price: Number(price), source:'manual', updatedAt: Date.now()}};
+    await saveGroup(state.code, g);
+    setState({group:g});
+  }
+
+  // Core primitive: get estimated round-trip flight price per member to a destination.
+  // Returns an array aligned to `members`, e.g. [{memberId, price}], price may be null on failure.
+  async function fetchFlightPrices(destName, dateRangeLabel, members){
+    const prompt = `You are estimating round-trip economy flight prices in USD for a friend-group trip.
+Destination: ${destName}. Travel dates: ${dateRangeLabel}.
+Home cities: ${members.map(m=>m.city).join(' | ')}.
+For each home city, give your best realistic estimate of a typical round-trip economy flight price (USD) to ${destName} for those dates, based on typical fare levels for that route and time of year. If a city is very close (short drive) to the destination, you can give a low number reflecting likely driving instead, or a low flight cost.
+Respond with ONLY a JSON array, no prose, no markdown fences, in this exact shape:
+[{"city":"<city as given>","price":<integer USD>}]
+The array must have exactly ${members.length} entries in the same order as the home cities listed.`;
+
+    try{
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+          model:"claude-sonnet-4-6",
+          max_tokens:1000,
+          messages:[{role:"user", content: prompt}]
+        })
+      });
+      const data = await response.json();
+      const text = (data.content||[]).map(b=>b.text||'').join('').trim();
+      const clean = text.replace(/```json|```/g,'').trim();
+      const parsed = JSON.parse(clean);
+      return members.map((m,i)=>{
+        const p = parsed[i];
+        const price = p && typeof p.price === 'number' ? p.price : null;
+        return {memberId: m.id, price};
+      });
+    }catch(e){
+      return members.map(m=>({memberId:m.id, price:null}));
+    }
+  }
+
+  // Fairness of a set of known prices: lower spread (max-min) = more fair.
+  function fairnessStats(prices, memberCount){
+    const known = prices.filter(p=>p.price!=null);
+    const total = known.reduce((a,b)=>a+b.price,0);
+    const allKnown = known.length===memberCount && memberCount>0;
+    if(known.length===0) return {total:0, spread:null, min:null, max:null, allKnown:false, known};
+    const vals = known.map(p=>p.price);
+    const min = Math.min(...vals), max = Math.max(...vals);
+    return {total, spread: max-min, min, max, allKnown, known};
+  }
+
+  // Calls the user's own deployed flight-price backend (see flight-price-backend/
+  // in the downloaded project). Returns null on any failure so the caller can
+  // fall back to an AI estimate instead of breaking.
+  async function fetchRealPrices(backendUrl, toAirport, depart, ret, members){
+    if(!backendUrl || !toAirport || members.length===0) return null;
+    try{
+      const url = backendUrl.replace(/\/$/,'') + '/api/prices-batch';
+      const res = await fetch(url, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          to: toAirport,
+          depart, ret,
+          origins: members.map(m=>({id:m.id, from:m.airport}))
+        })
+      });
+      if(!res.ok) return null;
+      const data = await res.json();
+      return Array.isArray(data.results) ? data.results : null;
+    }catch(e){
+      return null; // likely blocked by the artifact sandbox, or backend unreachable/misconfigured
+    }
+  }
+
+  // The main pricing entry point: tries real prices from the user's backend for
+  // any member with an airport code on file, then fills in AI estimates for
+  // everyone else (missing airport code, or the backend call failed/isn't set up).
+  // Returns [{memberId, price, source: 'real'|'ai'}], price may be missing entirely
+  // for a member if both paths failed.
+  async function getPrices(destName, destAirport, startDate, endDate, members){
+    const g = state.group;
+    const results = [];
+    let remaining = members;
+
+    if(g.backendUrl && destAirport){
+      const withAirport = members.filter(m=>m.airport);
+      if(withAirport.length){
+        const real = await fetchRealPrices(g.backendUrl, destAirport, startDate, endDate, withAirport);
+        if(real){
+          real.forEach(r=>{
+            if(r.price!=null) results.push({memberId:r.id, price:r.price, source:'real'});
+          });
+          const gotIds = new Set(results.map(r=>r.memberId));
+          remaining = members.filter(m=>!gotIds.has(m.id));
+        }
+      }
+    }
+
+    if(remaining.length){
+      const rangeLabel = formatDateRange(startDate, endDate);
+      const aiResults = await fetchFlightPrices(destName, rangeLabel, remaining);
+      aiResults.forEach(r=>{
+        if(r.price!=null) results.push({memberId:r.memberId, price:r.price, source:'ai'});
+      });
+    }
+    return results;
+  }
+
+  async function estimateForDestination(dest){
+    setState({busyDest: dest.id, error:null});
+    const g = state.group;
+    const missing = g.members.filter(m => !g.estimates[dest.id+':'+m.id]);
+    if(missing.length===0){ setState({busyDest:null}); return; }
+
+    const results = await getPrices(dest.name, dest.airport, dest.startDate, dest.endDate, missing);
+    const g2 = await loadGroup(state.code);
+    let gotAny = false;
+    results.forEach(r=>{
+      if(r.price!=null){
+        g2.estimates[dest.id+':'+r.memberId] = {price:r.price, source:r.source, updatedAt: Date.now()};
+        gotAny = true;
+      }
+    });
+    await saveGroup(state.code, g2);
+    setState({group:g2, busyDest:null, error: gotAny ? null : "Couldn't get flight prices just now — try again in a moment."});
+  }
+
+  // Finds candidate destinations, then prices each one out for every member and
+  // ranks candidates by fairness (smallest gap between cheapest and priciest flight)
+  // first, total cost second. This is the core "find the fair spot" engine.
+  async function suggestDestinations(startDate, endDate){
+    setState({suggestLoading:true, suggestLoadingStage:'Thinking of candidate cities…', error:null, suggestions:[]});
+    const g = state.group;
+    const rangeLabel = formatDateRange(startDate, endDate);
+    const cities = g.members.map(m=>m.city);
+    const existing = g.destinations.map(d=>d.name);
+
+    const prompt = `A group of ${cities.length} friends live in these home cities: ${cities.join(' | ')}.
+They want to take a group trip during ${rangeLabel}. Suggest 6 candidate destinations that are:
+1. Plausible candidates for being roughly EQUIDISTANT / similarly-priced to fly to from all of these home cities — favor cities that are geographically central to this specific set of home cities, or major air hubs reachable from all of them, over places that only favor one cluster of cities. This is the most important criterion.
+2. Genuinely good to visit specifically during ${rangeLabel} (weather, season, events) — avoid places with bad weather or off-season closures at that time.
+3. Fun for a group of friends on a vacation.
+${existing.length ? 'Do not repeat these already-suggested destinations: '+existing.join(', ')+'.' : ''}
+
+Respond with ONLY a JSON array, no prose, no markdown fences, in this exact shape:
+[{"name":"<City, State/Country>","airport":"<nearest major airport, 3-letter IATA code>","reason":"<one short clause, under 12 words, on why it fits that time of year>"}]`;
+
+    let candidates = [];
+    try{
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+          model:"claude-sonnet-4-6",
+          max_tokens:1200,
+          messages:[{role:"user", content: prompt}]
+        })
+      });
+      const data = await response.json();
+      const text = (data.content||[]).map(b=>b.text||'').join('').trim();
+      const clean = text.replace(/```json|```/g,'').trim();
+      candidates = JSON.parse(clean);
+    }catch(e){
+      setState({suggestLoading:false, error:"Couldn't generate suggestions just now — try again in a moment."});
+      return;
+    }
+
+    setState({suggestLoadingStage: `Pricing flights from all ${g.members.length} cities to each candidate…`});
+
+    const priced = await Promise.all(candidates.map(async c=>{
+      const results = await getPrices(c.name, c.airport, startDate, endDate, g.members);
+      const stats = fairnessStats(results, g.members.length);
+      return {...c, prices: results, ...stats};
+    }));
+
+    // Fair first: sort by spread ascending (only among those we got full pricing for), then total.
+    priced.sort((a,b)=>{
+      if(a.allKnown && !b.allKnown) return -1;
+      if(!a.allKnown && b.allKnown) return 1;
+      if(a.allKnown && b.allKnown) return a.spread - b.spread;
+      return 0;
+    });
+
+    setState({suggestions: priced, suggestLoading:false, suggestStartDate: startDate, suggestEndDate: endDate});
+  }
+
+  async function addSuggestion(s, startDate, endDate){
+    const dest = await addDestination(s.name, startDate, endDate, s.reason, s.airport);
+    const g2 = await loadGroup(state.code);
+    s.prices.forEach(p=>{
+      if(p.price!=null){
+        g2.estimates[dest.id+':'+p.memberId] = {price:p.price, source:p.source||'ai', updatedAt: Date.now()};
+      }
+    });
+    await saveGroup(state.code, g2);
+    setState({group:g2, suggestions: state.suggestions.filter(x=>x.name!==s.name)});
+  }
+
+  // ---------- Rendering ----------
+
+  function render(){
+    root.innerHTML = '';
+    if(state.view==='loading'){ root.appendChild(renderLoading()); return; }
+    if(state.view==='landing'){ root.appendChild(renderLanding()); return; }
+    if(state.view==='create'){ root.appendChild(renderCreate()); return; }
+    if(state.view==='join'){ root.appendChild(renderJoin()); return; }
+    if(state.view==='trip'){ root.appendChild(renderTrip()); return; }
+  }
+
+  function el(tag, cls, html){
+    const e = document.createElement(tag);
+    if(cls) e.className = cls;
+    if(html!=null) e.innerHTML = html;
+    return e;
+  }
+
+  function renderLoading(){
+    const wrap = el('div','tp-shell');
+    wrap.innerHTML = `<div class="tp-loading">Loading trip planner…</div>`;
+    return wrap;
+  }
+
+  function renderLanding(){
+    const wrap = el('div','tp-shell');
+    wrap.appendChild(hero(
+      "Convergence Planner",
+      "Meet Halfway",
+      "Ten friends, ten cities, two trips a year. Find the destination that's fun, in-season, and doesn't quietly cost one person three times what it costs everyone else."
+    ));
+
+    const card = el('div','tp-card');
+    card.innerHTML = `<h2><span class="num">01</span> Get started</h2>`;
+    const choice = el('div','tp-choice');
+
+    const c1 = el('div','tp-choice-card');
+    c1.innerHTML = `<h3>Start a new trip</h3><p>Create a trip and get a code to send your group.</p>`;
+    const b1 = el('button','tp-btn'); b1.textContent='Start a trip';
+    b1.onclick = ()=> setState({view:'create', error:null});
+    c1.appendChild(b1);
+
+    const c2 = el('div','tp-choice-card');
+    c2.innerHTML = `<h3>Join a trip</h3><p>Got a code from a friend? Enter it here.</p>`;
+    const b2 = el('button','tp-btn ghost'); b2.textContent='Join with code';
+    b2.onclick = ()=> setState({view:'join', error:null});
+    c2.appendChild(b2);
+
+    choice.appendChild(c1); choice.appendChild(c2);
+    card.appendChild(choice);
+    wrap.appendChild(card);
+    return wrap;
+  }
+
+  function hero(eyebrow, title, sub){
+    const h = el('div','tp-hero');
+    h.innerHTML = `<div class="tp-eyebrow">${eyebrow}</div><h1 class="disp">${title}</h1><p>${sub}</p>`;
+    return h;
+  }
+
+  function backLink(){
+    const b = el('button','tp-btn ghost small'); b.textContent='← Back';
+    b.style.marginBottom='16px';
+    b.onclick = ()=> setState({view:'landing', error:null});
+    return b;
+  }
+
+  function renderCreate(){
+    const wrap = el('div','tp-shell');
+    wrap.appendChild(backLink());
+    wrap.appendChild(hero("New trip","Set the trip up","Name your trip and drop in your own city — you'll get a code to send everyone else."));
+
+    const card = el('div','tp-card');
+    card.innerHTML = `<h2><span class="num">02</span> Trip details</h2>`;
+
+    const f1 = field('Trip name','e.g. Summer 2027 Meetup');
+    const f2 = field('Your name','e.g. Jordan');
+    const f3 = field('Your home city','e.g. Denver, CO');
+    const f4 = field('Nearest major airport (3-letter code)','e.g. DEN');
+    f4.input.style.textTransform='uppercase';
+    f4.input.maxLength = 3;
+    card.appendChild(f1.wrap); card.appendChild(f2.wrap); card.appendChild(f3.wrap); card.appendChild(f4.wrap);
+    const hint = el('div','tp-loading','Airport code is optional but needed if you want real flight prices instead of AI estimates. Not sure? Search "[your city] airport code".');
+    hint.style.marginBottom='10px';
+    card.appendChild(hint);
+
+    if(state.error){ const e = el('div','tp-err', state.error); card.appendChild(e); }
+
+    const btn = el('button','tp-btn','Create trip');
+    btn.style.marginTop='6px';
+    btn.onclick = ()=>{
+      if(!f1.input.value.trim()||!f2.input.value.trim()||!f3.input.value.trim()){
+        setState({error:'Fill in all three fields to continue.'}); return;
+      }
+      createTrip(f1.input.value.trim(), f2.input.value.trim(), f3.input.value.trim(), f4.input.value.trim());
+    };
+    card.appendChild(btn);
+    wrap.appendChild(card);
+    return wrap;
+  }
+
+  function renderJoin(){
+    const wrap = el('div','tp-shell');
+    wrap.appendChild(backLink());
+    wrap.appendChild(hero("Join a trip","Enter your code","Ask whoever set up the trip for their 5-letter code."));
+
+    const card = el('div','tp-card');
+    card.innerHTML = `<h2><span class="num">02</span> Your details</h2>`;
+    const f0 = field('Trip code','e.g. K7QXZ');
+    f0.input.style.textTransform='uppercase';
+    const f1 = field('Your name','e.g. Priya');
+    const f2 = field('Your home city','e.g. Austin, TX');
+    const f3 = field('Nearest major airport (3-letter code)','e.g. AUS');
+    f3.input.style.textTransform='uppercase';
+    f3.input.maxLength = 3;
+    card.appendChild(f0.wrap); card.appendChild(f1.wrap); card.appendChild(f2.wrap); card.appendChild(f3.wrap);
+    const hint = el('div','tp-loading','Airport code is optional but needed if the group wants real flight prices instead of AI estimates.');
+    hint.style.marginBottom='10px';
+    card.appendChild(hint);
+
+    if(state.error){ const e = el('div','tp-err', state.error); card.appendChild(e); }
+
+    const btn = el('button','tp-btn','Join trip');
+    btn.style.marginTop='6px';
+    btn.onclick = ()=>{
+      if(!f0.input.value.trim()||!f1.input.value.trim()||!f2.input.value.trim()){
+        setState({error:'Fill in all three fields to continue.'}); return;
+      }
+      joinTrip(f0.input.value.trim(), f1.input.value.trim(), f2.input.value.trim(), f3.input.value.trim());
+    };
+    card.appendChild(btn);
+    wrap.appendChild(card);
+    return wrap;
+  }
+
+  function field(label, placeholder, value){
+    const wrap = el('div','tp-field');
+    const l = el('label',null,label);
+    const input = document.createElement('input');
+    input.placeholder = placeholder||'';
+    if(value) input.value = value;
+    wrap.appendChild(l); wrap.appendChild(input);
+    return {wrap, input};
+  }
+
+  function dateField(label, value){
+    const wrap = el('div','tp-field');
+    const l = el('label',null,label);
+    const input = document.createElement('input');
+    input.type = 'date';
+    if(value) input.value = value;
+    wrap.appendChild(l); wrap.appendChild(input);
+    return {wrap, input};
+  }
+
+  function renderTrip(){
+    const wrap = el('div','tp-shell');
+    const g = state.group;
+
+    const topbar = el('div','tp-topbar');
+    topbar.innerHTML = `<div class="disp" style="font-size:18px;font-weight:600;">${escapeHtml(g.name)}</div>
+      <div class="code">code <b>${state.code}</b></div>`;
+    wrap.appendChild(topbar);
+
+    // members
+    const memberCard = el('div','tp-card');
+    memberCard.innerHTML = `<h2><span class="num">${g.members.length}</span> In the group</h2>`;
+    const chips = el('div','tp-members');
+    g.members.forEach(m=>{
+      const chip = el('div','tp-chip');
+      chip.innerHTML = `<span class="tp-avatar">${initials(m.name)}</span><span>${escapeHtml(m.name)} · ${escapeHtml(m.city)}${m.airport ? ' ('+escapeHtml(m.airport)+')' : ''}</span>`;
+      chips.appendChild(chip);
+    });
+    memberCard.appendChild(chips);
+    const shareNote = el('div','tp-loading','Share the code above so the rest of the group can join.');
+    shareNote.style.marginTop='10px';
+    memberCard.appendChild(shareNote);
+    wrap.appendChild(memberCard);
+
+    // real-price backend settings
+    const beCard = el('div','tp-card');
+    beCard.innerHTML = `<h2><span class="num">⚙</span> Real flight prices</h2>`;
+    const beDesc = el('div','tp-loading','AI estimates are used by default. To get real prices, deploy the flight-price-backend project (in your downloads) and paste its URL here. Needs airport codes on members and destinations.');
+    beDesc.style.marginBottom='10px';
+    beCard.appendChild(beDesc);
+    const beRow = el('div','tp-row');
+    const beField = field('Backend URL', 'https://your-app.onrender.com', g.backendUrl||'');
+    beRow.appendChild(beField.wrap);
+    beCard.appendChild(beRow);
+    const beBtnRow = el('div'); beBtnRow.style.display='flex'; beBtnRow.style.gap='8px';
+    const beSave = el('button','tp-btn small','Save');
+    beSave.onclick = ()=> setBackendUrl(beField.input.value);
+    const beTest = el('button','tp-btn ghost small','Test connection');
+    beTest.onclick = ()=> testBackend(beField.input.value.trim());
+    beBtnRow.appendChild(beSave); beBtnRow.appendChild(beTest);
+    beCard.appendChild(beBtnRow);
+    if(state.backendStatus){
+      const statusMap = {
+        checking: ['Checking…','var(--paper-dim)'],
+        ok: ['Connected — API key detected, real prices are live.','var(--green)'],
+        'ok-no-key': ['Reached the backend, but it has no SerpApi key set yet.','var(--amber)'],
+        fail: ["Couldn't reach that URL. It may be down, wrong, or blocked by the artifact sandbox — see the backend README.",'var(--coral)']
+      };
+      const [msg,color] = statusMap[state.backendStatus];
+      const statusEl = el('div', null, msg);
+      statusEl.style.cssText = `font-size:12px;margin-top:8px;color:${color};`;
+      beCard.appendChild(statusEl);
+    }
+    wrap.appendChild(beCard);
+
+    // add destination
+    const addCard = el('div','tp-card');
+    addCard.innerHTML = `<h2><span class="num">+</span> Suggest a destination</h2>`;
+    const nameRow = el('div','tp-row');
+    const fName = field('Destination','e.g. Asheville, NC');
+    const fAirport = field('Airport code (optional)','e.g. AVL');
+    fAirport.input.style.textTransform='uppercase';
+    fAirport.input.maxLength = 3;
+    nameRow.appendChild(fName.wrap); nameRow.appendChild(fAirport.wrap);
+    addCard.appendChild(nameRow);
+    const row = el('div','tp-row');
+    const fStart = dateField('Trip start', todayISO(30));
+    const fEnd = dateField('Trip end', todayISO(37));
+    row.appendChild(fStart.wrap); row.appendChild(fEnd.wrap);
+    addCard.appendChild(row);
+    const fNotes = field('Why this place (optional)','e.g. hiking + breweries, everyone loved it last time');
+    addCard.appendChild(fNotes.wrap);
+    const addBtn = el('button','tp-btn','Add destination');
+    addBtn.onclick = ()=>{
+      if(!fName.input.value.trim()||!fStart.input.value||!fEnd.input.value) return;
+      if(fEnd.input.value < fStart.input.value){ setState({error:'Trip end date is before the start date.'}); return; }
+      addDestination(fName.input.value.trim(), fStart.input.value, fEnd.input.value, fNotes.input.value.trim(), fAirport.input.value.trim());
+      fName.input.value=''; fNotes.input.value=''; fAirport.input.value='';
+    };
+    addCard.appendChild(addBtn);
+    wrap.appendChild(addCard);
+
+    // suggest destinations based on home cities
+    const suggestCard = el('div','tp-card');
+    suggestCard.innerHTML = `<h2><span class="num">✦</span> Not sure where? Get ideas</h2>`;
+    const sDesc = el('div','tp-loading', `Suggests places that are fair to reach from all ${g.members.length} home cities and good to visit on the dates you pick.`);
+    sDesc.style.marginBottom='12px';
+    suggestCard.appendChild(sDesc);
+
+    const sRow = el('div','tp-row');
+    const sStart = dateField('Trip start', state.suggestStartDate);
+    const sEnd = dateField('Trip end', state.suggestEndDate);
+    sRow.appendChild(sStart.wrap); sRow.appendChild(sEnd.wrap);
+    suggestCard.appendChild(sRow);
+
+    const sBtn = el('button','tp-btn', state.suggestLoading ? 'Working…' : 'Find the fairest destinations');
+    sBtn.disabled = state.suggestLoading || g.members.length===0;
+    sBtn.onclick = ()=>{
+      if(!sStart.input.value||!sEnd.input.value) return;
+      if(sEnd.input.value < sStart.input.value){ setState({error:'Trip end date is before the start date.'}); return; }
+      suggestDestinations(sStart.input.value, sEnd.input.value);
+    };
+    suggestCard.appendChild(sBtn);
+
+    if(state.suggestLoading && state.suggestLoadingStage){
+      const stage = el('div','tp-loading', state.suggestLoadingStage);
+      stage.style.marginTop='10px';
+      suggestCard.appendChild(stage);
+    }
+
+    if(state.suggestions.length){
+      const fairId = state.suggestions.find(s=>s.allKnown)?.name;
+      const sList = el('div'); sList.style.marginTop='14px';
+      state.suggestions.forEach(s=>{
+        const sc = el('div','tp-suggest-card');
+        const already = g.destinations.some(d=>d.name.toLowerCase()===s.name.toLowerCase());
+        const isFairest = s.name===fairId;
+        const statLine = s.allKnown
+          ? `Spread <b style="color:var(--paper)">$${s.spread.toLocaleString()}</b> · Total $${s.total.toLocaleString()}`
+          : (s.known && s.known.length ? 'Partial pricing' : 'Pricing unavailable');
+        const left = el('div');
+        left.innerHTML = `<h4>${escapeHtml(s.name)} ${isFairest ? '<span class="tp-best-badge" style="margin-left:6px;">MOST FAIR</span>' : ''}</h4>
+          <p>${escapeHtml(s.reason||'')}</p>
+          <p class="mono" style="margin-top:5px;font-size:11.5px;">${statLine}</p>`;
+        sc.appendChild(left);
+        const aBtn = el('button','tp-btn small', already ? 'Added' : 'Add to trip');
+        aBtn.disabled = already;
+        aBtn.style.flexShrink = '0';
+        aBtn.onclick = ()=> addSuggestion(s, state.suggestStartDate, state.suggestEndDate);
+        sc.appendChild(aBtn);
+        sList.appendChild(sc);
+      });
+      suggestCard.appendChild(sList);
+    }
+    wrap.appendChild(suggestCard);
+
+    // destinations ranked by fairness first (smallest gap between cheapest and priciest flight),
+    // total group cost as the tiebreaker.
+    const destSection = el('div');
+    const heading = el('div','tp-card');
+    heading.innerHTML = `<h2><span class="num">⚖</span> Ranked by fairness</h2>`;
+    const rankNote = el('div','tp-loading','Sorted by the smallest gap between the cheapest and most expensive flight in the group — total cost breaks ties.');
+    rankNote.style.marginBottom = g.destinations.length ? '2px' : '0';
+    heading.appendChild(rankNote);
+    if(state.error){ heading.appendChild(el('div','tp-err', state.error)); }
+    if(g.destinations.length===0){
+      heading.appendChild(el('div','tp-empty','No destinations yet — add one above, or find fair ones automatically.'));
+    }
+    destSection.appendChild(heading);
+
+    const ranked = g.destinations.map(d=>{
+      const priced = g.members.map(m=>{
+        const rec = g.estimates[d.id+':'+m.id];
+        return {memberId: m.id, price: rec ? rec.price : null};
+      });
+      const stats = fairnessStats(priced, g.members.length);
+      const prices = g.members.map(m=>{
+        const rec = g.estimates[d.id+':'+m.id];
+        return {member:m, price: rec ? rec.price : null, source: rec ? rec.source : null};
+      });
+      return {dest:d, prices, ...stats};
+    });
+    ranked.sort((a,b)=>{
+      if(a.allKnown && !b.allKnown) return -1;
+      if(!a.allKnown && b.allKnown) return 1;
+      if(a.allKnown && b.allKnown) return a.spread - b.spread;
+      return 0;
+    });
+    const fairestId = ranked.find(r=>r.allKnown)?.dest.id;
+
+    ranked.forEach(r=>{
+      destSection.appendChild(renderDestCard(r, g, fairestId));
+    });
+
+    wrap.appendChild(destSection);
+    return wrap;
+  }
+
+  function renderDestCard(r, g, fairestId){
+    const d = r.dest;
+    const card = el('div','tp-dest-card');
+    const top = el('div','tp-dest-top');
+    const head = el('div','tp-dest-head');
+    const isFairest = d.id===fairestId;
+    head.innerHTML = `<div>
+        <h3 class="disp">${escapeHtml(d.name)}</h3>
+        <div class="tp-season">${formatDateRange(d.startDate, d.endDate)}${d.notes ? ' · '+escapeHtml(d.notes) : ''}</div>
+      </div>
+      ${isFairest ? '<div class="tp-best-badge">MOST FAIR</div>' : ''}`;
+    top.appendChild(head);
+    card.appendChild(top);
+
+    const body = el('div','tp-dest-body');
+    body.appendChild(diagram(r, g));
+
+    const list = el('div','tp-price-list');
+    r.prices.forEach(p=>{
+      const row = el('div','tp-price-row');
+      const left = el('div','tp-price-name', `<span class="tp-avatar" style="width:16px;height:16px;font-size:8.5px;">${initials(p.member.name)}</span> ${escapeHtml(p.member.name)}`);
+      const right = el('div','tp-price-val');
+      if(p.price!=null){
+        const tagText = p.source==='real' ? 'real' : (p.source==='manual' ? 'you set' : 'est');
+        const tagColor = p.source==='real' ? 'var(--green)' : 'var(--paper-dim)';
+        right.innerHTML = `$<input class="tp-price-input" type="number" value="${p.price}"/> <span class="tp-src-tag" style="color:${tagColor};opacity:${p.source==='real'?1:0.7};">${tagText}</span>`;
+        const inp = right.querySelector('input');
+        inp.onchange = ()=> setManualPrice(d.id, p.member.id, inp.value);
+      } else {
+        right.innerHTML = `<span style="color:var(--paper-dim)">—</span>`;
+      }
+      row.appendChild(left); row.appendChild(right);
+      list.appendChild(row);
+    });
+    body.appendChild(list);
+    card.appendChild(body);
+
+    const totalsWrap = el('div');
+    const totals = el('div','tp-totals');
+    const totalStr = r.known.length ? ('$'+r.total.toLocaleString()+ (r.allKnown?'':' (partial)')) : '—';
+    const spreadStr = r.spread!=null ? '$'+r.spread.toLocaleString() : '—';
+    const statsBox = el('div'); statsBox.style.display='flex'; statsBox.style.gap='22px';
+    statsBox.innerHTML = `<div><div class="tp-total-label">Fairness spread</div><div class="tp-total-num" style="font-size:17px;">${spreadStr}</div></div>
+      <div><div class="tp-total-label">Group total</div><div class="tp-total-num" style="font-size:17px;">${totalStr}</div></div>`;
+    totals.appendChild(statsBox);
+    const btn = el('button','tp-btn small', state.busyDest===d.id ? 'Pricing…' : 'Get flight prices');
+    btn.disabled = state.busyDest===d.id;
+    btn.onclick = ()=> estimateForDestination(d);
+    const rmBtn = el('button','tp-btn ghost small','Remove');
+    rmBtn.style.marginLeft='8px';
+    rmBtn.onclick = ()=> removeDestination(d.id);
+    const btnWrap = el('div'); btnWrap.style.display='flex';
+    btnWrap.appendChild(btn); btnWrap.appendChild(rmBtn);
+    totals.appendChild(btnWrap);
+    totalsWrap.appendChild(totals);
+
+    if(r.allKnown){
+      const maxPayer = r.prices.find(p=>p.price===r.max);
+      if(maxPayer){
+        const note = el('div','tp-src-tag', `${escapeHtml(maxPayer.member.name)} pays the most, at $${r.max.toLocaleString()}`);
+        note.style.padding = '0 18px 12px';
+        totalsWrap.appendChild(note);
+      }
+    }
+    card.appendChild(totalsWrap);
+
+    return card;
+  }
+
+  function diagram(r, g){
+    const wrap = el('div','tp-diagram');
+    const n = g.members.length;
+    const size = 150, cx=75, cy=75, R=58;
+    let lines = '', dots = '';
+    const maxP = Math.max(1, ...r.prices.map(p=>p.price||0));
+    r.prices.forEach((p,i)=>{
+      const angle = (i/n) * Math.PI*2 - Math.PI/2;
+      const x = cx + R*Math.cos(angle);
+      const y = cy + R*Math.sin(angle);
+      let color = 'rgba(233,227,211,0.25)';
+      let w = 1;
+      if(p.price!=null){
+        const ratio = p.price/maxP;
+        w = 1 + ratio*3;
+        color = ratio > 0.7 ? '#E2593F' : ratio > 0.4 ? '#E8A33D' : '#4FA37B';
+      }
+      lines += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="${color}" stroke-width="${w}" stroke-linecap="round"/>`;
+      dots += `<circle cx="${x}" cy="${y}" r="4" fill="${p.price!=null?color:'rgba(233,227,211,0.3)'}"/>`;
+    });
+    wrap.innerHTML = `<svg viewBox="0 0 ${size} ${size}" width="100%" height="100%">
+      ${lines}
+      <circle cx="${cx}" cy="${cy}" r="9" fill="#E9E3D3"/>
+      <circle cx="${cx}" cy="${cy}" r="9" fill="none" stroke="#12233B" stroke-width="1.5"/>
+      ${dots}
+    </svg>`;
+    return wrap;
+  }
+
+  function escapeHtml(s){
+    const d = document.createElement('div'); d.textContent = s; return d.innerHTML;
+  }
+
+  init();
+})();
+</script>

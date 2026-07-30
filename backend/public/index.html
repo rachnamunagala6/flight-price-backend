@@ -1,0 +1,1038 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Convergence Planner</title>
+<style>
+  html, body { margin:0; padding:0; min-height:100%; background:#F2F6F6; }
+  @import url('https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Karla:wght@400;600;700;800&display=swap');
+
+  :root{
+    --ink:#F2F6F6;
+    --panel:#FFFFFF;
+    --panel-2:#E7F0EF;
+    --paper:#123645;
+    --paper-dim:#5E7A82;
+    --amber:#E8A33D;
+    --coral:#FF7A59;
+    --coral-deep:#E1583A;
+    --green:#14818F;
+    --line:rgba(18,54,69,0.11);
+  }
+  *{box-sizing:border-box;}
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important;animation-iteration-count:1 !important;transition-duration:0.001ms !important;}
+  }
+  #tp-root{
+    font-family:'Karla',sans-serif;
+    background:var(--ink);
+    color:var(--paper);
+    min-height:100%;
+    padding:0;
+    -webkit-font-smoothing:antialiased;
+  }
+  #tp-root .disp{font-family:'Jost',sans-serif;}
+  #tp-root .mono{font-family:'Karla',sans-serif;font-weight:800;font-variant-numeric:tabular-nums;}
+  #tp-root button{font-family:inherit;cursor:pointer;}
+  #tp-root input,#tp-root select{font-family:inherit;}
+
+  .tp-shell{max-width:760px;margin:0 auto;padding:28px 18px 60px;}
+
+  .tp-hero{
+    border:none;
+    border-radius:22px;
+    padding:56px 26px 68px;
+    background:linear-gradient(195deg, #BFE3EE 0%, #4FA9C4 45%, #0E4C5C 100%);
+    margin-bottom:0;
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 18px 34px -14px rgba(14,76,92,0.45);
+    text-align:center;
+  }
+  .tp-hero-sky{
+    position:absolute;inset:0;
+    background:
+      radial-gradient(ellipse 160px 60px at 22% 28%, rgba(255,255,255,0.55), transparent 70%),
+      radial-gradient(ellipse 120px 46px at 68% 18%, rgba(255,255,255,0.4), transparent 70%),
+      radial-gradient(circle at 82% 8%, rgba(255,244,214,0.55), transparent 55%);
+    filter:blur(2px);
+  }
+  .tp-hero-trail{position:absolute;top:20px;right:26px;width:96px;height:60px;opacity:0.85;}
+  .tp-eyebrow{
+    font-family:'Jost',sans-serif;
+    font-weight:500;
+    font-size:12px;
+    letter-spacing:.32em;
+    text-transform:uppercase;
+    color:rgba(255,255,255,0.92);
+    margin-bottom:14px;
+    position:relative;
+  }
+  .tp-hero h1{
+    font-family:'Jost',sans-serif;
+    font-size:34px;
+    font-weight:500;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    margin:0 0 14px;
+    color:#fff;
+    position:relative;
+    text-wrap:balance;
+    line-height:1.25;
+  }
+  .tp-hero p{margin:0 auto;color:rgba(255,255,255,0.92);font-size:14.5px;line-height:1.6;position:relative;max-width:420px;}
+
+  .tp-card{
+    border:1px solid var(--line);
+    border-radius:16px;
+    background:var(--panel);
+    padding:20px;
+    margin-bottom:16px;
+    box-shadow:0 2px 12px -6px rgba(18,54,69,0.08);
+  }
+  .tp-card h2{
+    font-family:'Jost',sans-serif;
+    font-size:15px;font-weight:500;margin:0 0 14px;
+    text-transform:uppercase;letter-spacing:.06em;
+    display:flex;align-items:center;gap:10px;
+  }
+  .tp-card h2 .num{
+    font-family:'Karla',sans-serif;
+    font-size:11px;color:#fff;font-weight:800;
+    background:var(--green);
+    border-radius:20px;padding:3px 10px;
+    letter-spacing:0;
+  }
+
+  .tp-btn{
+    background:var(--green);
+    color:#fff;border:none;
+    padding:13px 22px;border-radius:8px;font-weight:700;font-size:13.5px;
+    letter-spacing:.03em;
+    box-shadow:0 8px 18px -8px rgba(20,129,143,0.55);
+    transition:transform .12s ease, box-shadow .12s ease, background .12s ease;
+  }
+  .tp-btn:hover{background:#0F6E7A;transform:translateY(-1px);box-shadow:0 10px 20px -8px rgba(20,129,143,0.6);}
+  .tp-btn:active{transform:translateY(0);box-shadow:0 4px 10px -6px rgba(20,129,143,0.5);}
+  .tp-btn:disabled{opacity:.5;cursor:not-allowed;box-shadow:none;transform:none;}
+  .tp-btn.ghost{
+    background:transparent;color:var(--paper);border:1.5px solid var(--line);box-shadow:none;
+  }
+  .tp-btn.ghost:hover{border-color:var(--green);color:var(--green);transform:none;background:transparent;}
+  .tp-btn.small{padding:8px 15px;font-size:12.5px;box-shadow:0 5px 12px -6px rgba(20,129,143,0.45);}
+
+  .tp-field{margin-bottom:12px;}
+  .tp-field label{display:block;font-size:12px;font-weight:700;color:var(--paper-dim);margin-bottom:5px;letter-spacing:.03em;text-transform:uppercase;}
+  .tp-field input, .tp-field select{
+    width:100%;padding:10px 13px;border-radius:8px;
+    border:1.5px solid var(--line);background:var(--ink);color:var(--paper);
+    font-size:14.5px;font-weight:600;outline:none;transition:border-color .12s ease, box-shadow .12s ease;
+  }
+  .tp-field input:focus, .tp-field select:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(20,129,143,0.14);}
+
+  .tp-row{display:flex;gap:10px;}
+  .tp-row > *{flex:1;}
+
+  .tp-choice{
+    display:flex;
+    background:var(--panel);
+    border-radius:16px;
+    box-shadow:0 20px 40px -16px rgba(14,76,92,0.4);
+    margin:-40px 14px 26px;
+    position:relative;
+    z-index:2;
+    overflow:hidden;
+  }
+  .tp-choice-card{
+    flex:1;padding:24px 20px;
+    text-align:center;background:transparent;
+  }
+  .tp-choice-card:first-child{border-right:1px solid var(--line);}
+  .tp-choice-card h3{margin:0 0 4px;font-family:'Jost',sans-serif;font-size:16px;font-weight:500;text-transform:uppercase;letter-spacing:.03em;}
+  .tp-choice-card p{margin:0 0 14px;font-size:12.5px;color:var(--paper-dim);line-height:1.4;}
+
+  .tp-code-badge{
+    font-family:'Jost',sans-serif;font-size:19px;font-weight:500;letter-spacing:.2em;
+    color:var(--paper);
+    padding:9px 22px;border-radius:999px;display:inline-block;
+    border:1.5px solid var(--green);
+    background:var(--panel-2);
+  }
+
+  .tp-members{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;}
+  .tp-chip{
+    display:flex;align-items:center;gap:6px;
+    background:var(--panel-2);border:1px solid var(--line);
+    padding:6px 10px 6px 6px;border-radius:20px;font-size:12.5px;font-weight:600;
+  }
+  .tp-avatar{
+    width:20px;height:20px;border-radius:50%;
+    background:var(--green);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-size:10px;font-weight:800;
+  }
+
+  .tp-dest-card{
+    border:1px solid var(--line);border-radius:16px;background:var(--panel);
+    margin-bottom:18px;overflow:hidden;box-shadow:0 8px 22px -10px rgba(18,54,69,0.2);
+    position:relative;
+  }
+  .tp-dest-photo{
+    position:relative;padding:22px 20px 18px;min-height:88px;
+    display:flex;flex-direction:column;justify-content:flex-end;
+  }
+  .tp-dest-photo-text h3{margin:0 0 4px;font-family:'Jost',sans-serif;font-size:21px;font-weight:500;color:#fff;letter-spacing:.02em;}
+  .tp-season{
+    font-family:'Karla',sans-serif;font-weight:700;font-size:11px;color:rgba(255,255,255,0.92);
+    text-transform:uppercase;letter-spacing:.06em;
+  }
+  .tp-best-badge{
+    position:absolute;top:14px;right:16px;
+    background:rgba(255,255,255,0.94);color:var(--paper);font-size:10.5px;font-weight:800;
+    padding:5px 11px;border-radius:20px;font-family:'Karla',sans-serif;
+    letter-spacing:.03em;white-space:nowrap;
+    box-shadow:0 4px 10px -4px rgba(0,0,0,0.25);
+  }
+
+  .tp-dest-body{display:flex;gap:16px;padding:16px 18px 18px;flex-wrap:wrap;}
+  .tp-diagram{flex-shrink:0;width:150px;height:150px;}
+  .tp-price-list{flex:1;min-width:200px;}
+  .tp-price-row{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:7px 0;border-bottom:1px solid var(--line);font-size:13.5px;font-weight:600;
+    gap:8px;
+  }
+  .tp-price-row:last-child{border-bottom:none;}
+  .tp-price-name{display:flex;align-items:center;gap:7px;color:var(--paper-dim);}
+  .tp-price-val{font-family:'Karla',sans-serif;font-weight:800;font-variant-numeric:tabular-nums;display:flex;align-items:center;gap:6px;}
+  .tp-price-input{
+    width:66px;background:var(--ink);border:1.5px solid var(--line);
+    border-radius:6px;color:var(--paper);font-family:'Karla',sans-serif;font-weight:800;
+    font-size:13px;padding:3px 6px;text-align:right;font-variant-numeric:tabular-nums;
+  }
+  .tp-price-input:focus{outline:none;border-color:var(--green);}
+  .tp-src-tag{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--paper-dim);opacity:.85;}
+
+  .tp-totals{
+    display:flex;justify-content:space-between;align-items:baseline;
+    padding:14px 18px;border-top:1px solid var(--line);background:var(--panel-2);
+  }
+  .tp-total-num{font-family:'Jost',sans-serif;font-size:20px;font-weight:500;color:var(--paper);}
+  .tp-total-label{font-size:11px;font-weight:700;color:var(--paper-dim);text-transform:uppercase;letter-spacing:.05em;}
+
+  .tp-empty{
+    text-align:center;padding:34px 20px;color:var(--paper-dim);font-size:13.5px;font-weight:600;
+    border:1.5px dashed var(--line);border-radius:14px;
+  }
+
+  .tp-topbar{
+    display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;
+  }
+  .tp-topbar .code{font-size:12.5px;font-weight:700;color:var(--paper-dim);}
+  .tp-topbar .code b{font-family:'Jost',sans-serif;font-size:14px;letter-spacing:.05em;color:var(--green);}
+
+  .tp-perf{
+    border-top:1px dashed var(--line);margin:16px 0;position:relative;
+  }
+
+  .tp-err{color:#C0392B;font-size:12.5px;font-weight:700;margin-top:8px;}
+  .tp-loading{font-size:12.5px;font-weight:600;color:var(--paper-dim);font-style:italic;}
+
+  .tp-suggest-card{
+    border:1px solid var(--line);border-radius:14px;background:var(--panel-2);
+    padding:14px 16px;margin-bottom:10px;display:flex;justify-content:space-between;
+    align-items:center;gap:12px;
+  }
+  .tp-suggest-card h4{margin:0 0 3px;font-family:'Jost',sans-serif;font-size:15.5px;font-weight:500;}
+  .tp-suggest-card p{margin:0;font-size:12.5px;color:var(--paper-dim);line-height:1.4;}
+
+  @media (max-width:480px){
+    .tp-choice{flex-direction:column;margin:-30px 10px 26px;}
+    .tp-choice-card:first-child{border-right:none;border-bottom:1px solid var(--line);}
+    .tp-dest-body{flex-direction:column;align-items:center;}
+    .tp-price-list{width:100%;}
+  }
+</style>
+</head>
+<body>
+<div id="tp-root"></div>
+<script>
+(function(){
+  const root = document.getElementById('tp-root');
+  const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+  function todayISO(offsetDays){
+    const d = new Date();
+    d.setDate(d.getDate() + (offsetDays||0));
+    return d.toISOString().slice(0,10);
+  }
+  function parseISO(s){
+    const [y,m,day] = s.split('-').map(Number);
+    return new Date(y, m-1, day);
+  }
+  function formatDateRange(startStr, endStr){
+    if(!startStr || !endStr) return 'Dates TBD';
+    const s = parseISO(startStr), e = parseISO(endStr);
+    const sameMonth = s.getMonth()===e.getMonth() && s.getFullYear()===e.getFullYear();
+    const sameYear = s.getFullYear()===e.getFullYear();
+    if(sameMonth){
+      return `${MONTHS[s.getMonth()]} ${s.getDate()}–${e.getDate()}, ${e.getFullYear()}`;
+    }
+    if(sameYear){
+      return `${MONTHS[s.getMonth()]} ${s.getDate()} – ${MONTHS[e.getMonth()]} ${e.getDate()}, ${e.getFullYear()}`;
+    }
+    return `${MONTHS[s.getMonth()]} ${s.getDate()}, ${s.getFullYear()} – ${MONTHS[e.getMonth()]} ${e.getDate()}, ${e.getFullYear()}`;
+  }
+
+  // Renders the reasoning behind a real-price pick, e.g. "5h20m · 1 stop" —
+  // so a cheap-but-terrible itinerary (or the fact the cheapest available
+  // option genuinely does have 2 stops) is visible, not a black box.
+  function formatFlightNote(duration, stops){
+    if(duration==null) return '';
+    const h = Math.floor(duration/60), m = duration%60;
+    const durStr = h>0 ? `${h}h${m?m+'m':''}` : `${m}m`;
+    const stopStr = stops==null ? '' : stops===0 ? 'nonstop' : stops===1 ? '1 stop' : `${stops} stops`;
+    return stopStr ? `${durStr} · ${stopStr}` : durStr;
+  }
+
+  let state = {
+    view: 'loading', // loading | landing | create | join | trip
+    code: null,
+    group: null, // {name, members, destinations, estimates}
+    myId: null,
+    error: null,
+    busyDest: null,
+    suggestions: [],
+    suggestLoading: false,
+    suggestLoadingStage: '',
+    suggestStartDate: todayISO(30),
+    suggestEndDate: todayISO(37),
+  };
+
+  function setState(patch){ state = {...state, ...patch}; render(); }
+
+  function uid(){ return Math.random().toString(36).slice(2,9); }
+  function initials(name){
+    return name.trim().split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase();
+  }
+
+  function hashStr(id){
+    let h = 0;
+    for(let i=0;i<id.length;i++) h = (h*31 + id.charCodeAt(i)) >>> 0;
+    return h;
+  }
+
+  const AVATAR_COLORS = ['#FF7A59','#14818F','#8B6FB3','#E8A33D','#4C8DAE'];
+  function avatarColor(id){
+    return AVATAR_COLORS[hashStr(id) % AVATAR_COLORS.length];
+  }
+
+  // Stand-ins for destination photography: each place gets a consistent
+  // sky/water-toned gradient (no real images, so no misrepresenting a place
+  // with a stock photo of somewhere else).
+  const DEST_GRADIENTS = [
+    ['#FF9A6C','#FF5E62'],
+    ['#4FC3D9','#0F6E8C'],
+    ['#8E7CC3','#4A5B8C'],
+    ['#F4B860','#E8834E'],
+    ['#6FCF97','#1F9E7A'],
+  ];
+  function destGradient(id){
+    const [a,b] = DEST_GRADIENTS[hashStr(id) % DEST_GRADIENTS.length];
+    return `linear-gradient(135deg, ${a}, ${b})`;
+  }
+
+  // ---------- Persistence ----------
+  // Trip data (members, destinations, prices) lives server-side, keyed by the
+  // 5-letter join code. Which member you are on this device, and the last
+  // trip you had open, are purely local — no reason for those to round-trip
+  // to the server, so they live in localStorage instead.
+
+  function getMyId(code){ return localStorage.getItem('tp-myid-'+code); }
+  function setMyId(code, id){ localStorage.setItem('tp-myid-'+code, id); }
+
+  async function loadGroup(code){
+    try{
+      const res = await fetch('/api/trips/'+encodeURIComponent(code));
+      if(!res.ok) return null;
+      const data = await res.json();
+      return data.group || null;
+    }catch(e){ return null; }
+  }
+  async function saveGroup(code, group){
+    try{
+      const res = await fetch('/api/trips/'+encodeURIComponent(code), {
+        method:'PUT',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({group})
+      });
+      return res.ok;
+    }catch(e){ return false; }
+  }
+
+  async function init(){
+    try{
+      const last = localStorage.getItem('tp-last-code');
+      if(last){
+        const g = await loadGroup(last);
+        if(g){
+          const myId = getMyId(last);
+          if(myId && g.members.find(m=>m.id===myId)){
+            setState({view:'trip', code:last, group:g, myId});
+            return;
+          }
+        }
+      }
+    }catch(e){}
+    setState({view:'landing'});
+  }
+
+  // ---------- Actions ----------
+
+  async function createTrip(tripName, myName, myCity, myAirport){
+    const me = {id: uid(), name: myName, city: myCity, airport: (myAirport||'').toUpperCase()};
+    const group = {
+      name: tripName,
+      createdAt: Date.now(),
+      members: [me],
+      destinations: [],
+      estimates: {}
+    };
+    try{
+      const res = await fetch('/api/trips', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({group})
+      });
+      if(!res.ok) throw new Error();
+      const data = await res.json();
+      setMyId(data.code, me.id);
+      localStorage.setItem('tp-last-code', data.code);
+      setState({view:'trip', code:data.code, group:data.group, myId: me.id});
+    }catch(e){
+      setState({error:"Couldn't create the trip just now — try again."});
+    }
+  }
+
+  async function joinTrip(code, myName, myCity, myAirport){
+    code = code.trim().toUpperCase();
+    const g = await loadGroup(code);
+    if(!g){ setState({error:"Couldn't find a trip with that code. Double check it and try again."}); return; }
+    const me = {id: uid(), name: myName, city: myCity, airport: (myAirport||'').toUpperCase()};
+    g.members.push(me);
+    const ok = await saveGroup(code, g);
+    if(!ok){ setState({error:"Couldn't join the trip just now — try again."}); return; }
+    setMyId(code, me.id);
+    localStorage.setItem('tp-last-code', code);
+    setState({view:'trip', code, group:g, myId: me.id, error:null});
+  }
+
+  async function refreshGroup(){
+    const g = await loadGroup(state.code);
+    if(g) setState({group:g});
+  }
+
+  async function addDestination(name, startDate, endDate, notes, airport){
+    const g = {...state.group};
+    const dest = {id: uid(), name, startDate, endDate, notes, airport: (airport||'').toUpperCase()};
+    g.destinations = [...g.destinations, dest];
+    await saveGroup(state.code, g);
+    setState({group:g});
+    return dest;
+  }
+
+  async function removeDestination(destId){
+    const g = {...state.group};
+    g.destinations = g.destinations.filter(d=>d.id!==destId);
+    await saveGroup(state.code, g);
+    setState({group:g});
+  }
+
+  async function setManualPrice(destId, memberId, price){
+    const g = {...state.group};
+    const key = destId+':'+memberId;
+    g.estimates = {...g.estimates, [key]: {price: Number(price), source:'manual', updatedAt: Date.now()}};
+    await saveGroup(state.code, g);
+    setState({group:g});
+  }
+
+  // Core primitive: get AI-estimated round-trip flight price per member to a
+  // destination, via the backend (which holds the Anthropic key).
+  // Returns an array aligned to `members`, e.g. [{memberId, price}], price may be null on failure.
+  async function fetchFlightPrices(destName, dateRangeLabel, members){
+    try{
+      const res = await fetch('/api/ai/estimate-prices', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          destName,
+          rangeLabel: dateRangeLabel,
+          members: members.map(m=>({id:m.id, city:m.city}))
+        })
+      });
+      if(!res.ok) throw new Error();
+      const data = await res.json();
+      return Array.isArray(data.results) ? data.results : members.map(m=>({memberId:m.id, price:null}));
+    }catch(e){
+      return members.map(m=>({memberId:m.id, price:null}));
+    }
+  }
+
+  // Fairness of a set of known prices: lower spread (max-min) = more fair.
+  function fairnessStats(prices, memberCount){
+    const known = prices.filter(p=>p.price!=null);
+    const total = known.reduce((a,b)=>a+b.price,0);
+    const allKnown = known.length===memberCount && memberCount>0;
+    if(known.length===0) return {total:0, spread:null, min:null, max:null, allKnown:false, known};
+    const vals = known.map(p=>p.price);
+    const min = Math.min(...vals), max = Math.max(...vals);
+    return {total, spread: max-min, min, max, allKnown, known};
+  }
+
+  // Calls the same-origin flight-price backend for real prices. Returns null
+  // on any failure so the caller can fall back to an AI estimate instead of
+  // breaking.
+  async function fetchRealPrices(toAirport, depart, ret, members){
+    if(!toAirport || members.length===0) return null;
+    try{
+      const res = await fetch('/api/prices-batch', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          to: toAirport,
+          depart, ret,
+          origins: members.map(m=>({id:m.id, from:m.airport}))
+        })
+      });
+      if(!res.ok) return null;
+      const data = await res.json();
+      return Array.isArray(data.results) ? data.results : null;
+    }catch(e){
+      return null;
+    }
+  }
+
+  // The main pricing entry point: tries real prices for any member with an
+  // airport code on file, then fills in AI estimates for everyone else
+  // (missing airport code, or the real-price call failed).
+  // Returns [{memberId, price, source: 'real'|'ai'}], price may be missing
+  // entirely for a member if both paths failed.
+  async function getPrices(destName, destAirport, startDate, endDate, members){
+    const results = [];
+    let remaining = members;
+
+    if(destAirport){
+      const withAirport = members.filter(m=>m.airport);
+      if(withAirport.length){
+        const real = await fetchRealPrices(destAirport, startDate, endDate, withAirport);
+        if(real){
+          real.forEach(r=>{
+            if(r.price!=null) results.push({memberId:r.id, price:r.price, source:'real', duration:r.duration, stops:r.stops});
+          });
+          const gotIds = new Set(results.map(r=>r.memberId));
+          remaining = members.filter(m=>!gotIds.has(m.id));
+        }
+      }
+    }
+
+    if(remaining.length){
+      const rangeLabel = formatDateRange(startDate, endDate);
+      const aiResults = await fetchFlightPrices(destName, rangeLabel, remaining);
+      aiResults.forEach(r=>{
+        if(r.price!=null) results.push({memberId:r.memberId, price:r.price, source:'ai'});
+      });
+    }
+    return results;
+  }
+
+  async function estimateForDestination(dest){
+    setState({busyDest: dest.id, error:null});
+    const g = state.group;
+    const missing = g.members.filter(m => !g.estimates[dest.id+':'+m.id]);
+    if(missing.length===0){ setState({busyDest:null}); return; }
+
+    const results = await getPrices(dest.name, dest.airport, dest.startDate, dest.endDate, missing);
+    const g2 = await loadGroup(state.code);
+    let gotAny = false;
+    results.forEach(r=>{
+      if(r.price!=null){
+        g2.estimates[dest.id+':'+r.memberId] = {price:r.price, source:r.source, duration:r.duration, stops:r.stops, updatedAt: Date.now()};
+        gotAny = true;
+      }
+    });
+    await saveGroup(state.code, g2);
+    setState({group:g2, busyDest:null, error: gotAny ? null : "Couldn't get flight prices just now — try again in a moment."});
+  }
+
+  // Finds candidate destinations, then prices each one out for every member and
+  // ranks candidates by fairness (smallest gap between cheapest and priciest flight)
+  // first, total cost second. This is the core "find the fair spot" engine.
+  async function suggestDestinations(startDate, endDate){
+    setState({suggestLoading:true, suggestLoadingStage:'Thinking of candidate cities…', error:null, suggestions:[]});
+    const g = state.group;
+    const rangeLabel = formatDateRange(startDate, endDate);
+    const cities = g.members.map(m=>m.city);
+    const existing = g.destinations.map(d=>d.name);
+
+    let candidates = [];
+    try{
+      const res = await fetch('/api/ai/suggest-destinations', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({cities, rangeLabel, existing})
+      });
+      if(!res.ok) throw new Error();
+      const data = await res.json();
+      candidates = Array.isArray(data.candidates) ? data.candidates : [];
+    }catch(e){
+      setState({suggestLoading:false, error:"Couldn't generate suggestions just now — try again in a moment."});
+      return;
+    }
+
+    setState({suggestLoadingStage: `Pricing flights from all ${g.members.length} cities to each candidate…`});
+
+    const priced = await Promise.all(candidates.map(async c=>{
+      const results = await getPrices(c.name, c.airport, startDate, endDate, g.members);
+      const stats = fairnessStats(results, g.members.length);
+      return {...c, prices: results, ...stats};
+    }));
+
+    // Fair first: sort by spread ascending (only among those we got full pricing for), then total.
+    priced.sort((a,b)=>{
+      if(a.allKnown && !b.allKnown) return -1;
+      if(!a.allKnown && b.allKnown) return 1;
+      if(a.allKnown && b.allKnown) return a.spread - b.spread;
+      return 0;
+    });
+
+    setState({suggestions: priced, suggestLoading:false, suggestStartDate: startDate, suggestEndDate: endDate});
+  }
+
+  async function addSuggestion(s, startDate, endDate){
+    const dest = await addDestination(s.name, startDate, endDate, s.reason, s.airport);
+    const g2 = await loadGroup(state.code);
+    s.prices.forEach(p=>{
+      if(p.price!=null){
+        g2.estimates[dest.id+':'+p.memberId] = {price:p.price, source:p.source||'ai', duration:p.duration, stops:p.stops, updatedAt: Date.now()};
+      }
+    });
+    await saveGroup(state.code, g2);
+    setState({group:g2, suggestions: state.suggestions.filter(x=>x.name!==s.name)});
+  }
+
+  // ---------- Rendering ----------
+
+  function render(){
+    root.innerHTML = '';
+    if(state.view==='loading'){ root.appendChild(renderLoading()); return; }
+    if(state.view==='landing'){ root.appendChild(renderLanding()); return; }
+    if(state.view==='create'){ root.appendChild(renderCreate()); return; }
+    if(state.view==='join'){ root.appendChild(renderJoin()); return; }
+    if(state.view==='trip'){ root.appendChild(renderTrip()); return; }
+  }
+
+  function el(tag, cls, html){
+    const e = document.createElement(tag);
+    if(cls) e.className = cls;
+    if(html!=null) e.innerHTML = html;
+    return e;
+  }
+
+  function renderLoading(){
+    const wrap = el('div','tp-shell');
+    wrap.innerHTML = `<div class="tp-loading">Loading trip planner…</div>`;
+    return wrap;
+  }
+
+  function renderLanding(){
+    const wrap = el('div','tp-shell');
+    wrap.appendChild(hero(
+      "Convergence Planner",
+      "Meet Halfway",
+      "Find the destination that's fun, in-season, and doesn't quietly cost one person three times what it costs everyone else."
+    ));
+
+    const choice = el('div','tp-choice');
+
+    const c1 = el('div','tp-choice-card');
+    c1.innerHTML = `<h3>Start a new trip</h3><p>Create a trip and get a code to send your group.</p>`;
+    const b1 = el('button','tp-btn'); b1.textContent='Start a trip';
+    b1.onclick = ()=> setState({view:'create', error:null});
+    c1.appendChild(b1);
+
+    const c2 = el('div','tp-choice-card');
+    c2.innerHTML = `<h3>Join a trip</h3><p>Got a code from a friend? Enter it here.</p>`;
+    const b2 = el('button','tp-btn ghost'); b2.textContent='Join with code';
+    b2.onclick = ()=> setState({view:'join', error:null});
+    c2.appendChild(b2);
+
+    choice.appendChild(c1); choice.appendChild(c2);
+    wrap.appendChild(choice);
+    return wrap;
+  }
+
+  function hero(eyebrow, title, sub){
+    const h = el('div','tp-hero');
+    h.innerHTML = `<div class="tp-hero-sky"></div>
+      <svg class="tp-hero-trail" viewBox="0 0 110 70" fill="none">
+        <path d="M6 60 Q 50 10 100 18" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-dasharray="1 6" stroke-linecap="round"/>
+        <text x="98" y="24" font-size="15" transform="rotate(28 98 18)">✈️</text>
+      </svg>
+      <div class="tp-eyebrow">${eyebrow}</div><h1 class="disp">${title}</h1><p>${sub}</p>`;
+    return h;
+  }
+
+  function backLink(){
+    const b = el('button','tp-btn ghost small'); b.textContent='← Back';
+    b.style.marginBottom='16px';
+    b.onclick = ()=> setState({view:'landing', error:null});
+    return b;
+  }
+
+  function renderCreate(){
+    const wrap = el('div','tp-shell');
+    wrap.appendChild(backLink());
+    wrap.appendChild(hero("New trip","Set the trip up","Name your trip and drop in your own city — you'll get a code to send everyone else."));
+
+    const card = el('div','tp-card');
+    card.innerHTML = `<h2><span class="num">02</span> Trip details</h2>`;
+
+    const f1 = field('Trip name','e.g. Summer 2027 Meetup');
+    const f2 = field('Your name','e.g. Jordan');
+    const f3 = field('Your home city','e.g. Denver, CO');
+    const f4 = field('Nearest major airport (3-letter code)','e.g. DEN');
+    f4.input.style.textTransform='uppercase';
+    f4.input.maxLength = 3;
+    card.appendChild(f1.wrap); card.appendChild(f2.wrap); card.appendChild(f3.wrap); card.appendChild(f4.wrap);
+    const hint = el('div','tp-loading','Airport code is optional but needed if you want real flight prices instead of AI estimates. Not sure? Search "[your city] airport code".');
+    hint.style.marginBottom='10px';
+    card.appendChild(hint);
+
+    if(state.error){ const e = el('div','tp-err', state.error); card.appendChild(e); }
+
+    const btn = el('button','tp-btn','Create trip');
+    btn.style.marginTop='6px';
+    btn.onclick = ()=>{
+      if(!f1.input.value.trim()||!f2.input.value.trim()||!f3.input.value.trim()){
+        setState({error:'Fill in all three fields to continue.'}); return;
+      }
+      createTrip(f1.input.value.trim(), f2.input.value.trim(), f3.input.value.trim(), f4.input.value.trim());
+    };
+    card.appendChild(btn);
+    wrap.appendChild(card);
+    return wrap;
+  }
+
+  function renderJoin(){
+    const wrap = el('div','tp-shell');
+    wrap.appendChild(backLink());
+    wrap.appendChild(hero("Join a trip","Enter your code","Ask whoever set up the trip for their 5-letter code."));
+
+    const card = el('div','tp-card');
+    card.innerHTML = `<h2><span class="num">02</span> Your details</h2>`;
+    const f0 = field('Trip code','e.g. K7QXZ');
+    f0.input.style.textTransform='uppercase';
+    const f1 = field('Your name','e.g. Priya');
+    const f2 = field('Your home city','e.g. Austin, TX');
+    const f3 = field('Nearest major airport (3-letter code)','e.g. AUS');
+    f3.input.style.textTransform='uppercase';
+    f3.input.maxLength = 3;
+    card.appendChild(f0.wrap); card.appendChild(f1.wrap); card.appendChild(f2.wrap); card.appendChild(f3.wrap);
+    const hint = el('div','tp-loading','Airport code is optional but needed if the group wants real flight prices instead of AI estimates.');
+    hint.style.marginBottom='10px';
+    card.appendChild(hint);
+
+    if(state.error){ const e = el('div','tp-err', state.error); card.appendChild(e); }
+
+    const btn = el('button','tp-btn','Join trip');
+    btn.style.marginTop='6px';
+    btn.onclick = ()=>{
+      if(!f0.input.value.trim()||!f1.input.value.trim()||!f2.input.value.trim()){
+        setState({error:'Fill in all three fields to continue.'}); return;
+      }
+      joinTrip(f0.input.value.trim(), f1.input.value.trim(), f2.input.value.trim(), f3.input.value.trim());
+    };
+    card.appendChild(btn);
+    wrap.appendChild(card);
+    return wrap;
+  }
+
+  function field(label, placeholder, value){
+    const wrap = el('div','tp-field');
+    const l = el('label',null,label);
+    const input = document.createElement('input');
+    input.placeholder = placeholder||'';
+    if(value) input.value = value;
+    wrap.appendChild(l); wrap.appendChild(input);
+    return {wrap, input};
+  }
+
+  function dateField(label, value){
+    const wrap = el('div','tp-field');
+    const l = el('label',null,label);
+    const input = document.createElement('input');
+    input.type = 'date';
+    if(value) input.value = value;
+    wrap.appendChild(l); wrap.appendChild(input);
+    return {wrap, input};
+  }
+
+  function renderTrip(){
+    const wrap = el('div','tp-shell');
+    const g = state.group;
+
+    const topbar = el('div','tp-topbar');
+    topbar.innerHTML = `<div class="disp" style="font-size:20px;font-weight:500;">${escapeHtml(g.name)}</div>
+      <div class="tp-code-badge">${state.code}</div>`;
+    wrap.appendChild(topbar);
+
+    // members
+    const memberCard = el('div','tp-card');
+    memberCard.innerHTML = `<h2><span class="num">${g.members.length}</span> In the group</h2>`;
+    const chips = el('div','tp-members');
+    g.members.forEach(m=>{
+      const chip = el('div','tp-chip');
+      chip.innerHTML = `<span class="tp-avatar" style="background:${avatarColor(m.id)}">${initials(m.name)}</span><span>${escapeHtml(m.name)} · ${escapeHtml(m.city)}${m.airport ? ' ('+escapeHtml(m.airport)+')' : ''}</span>`;
+      chips.appendChild(chip);
+    });
+    memberCard.appendChild(chips);
+    const shareNote = el('div','tp-loading','Share the code above so the rest of the group can join. Real flight prices are used automatically when airport codes are set — otherwise you\'ll see an AI estimate.');
+    shareNote.style.marginTop='10px';
+    memberCard.appendChild(shareNote);
+    wrap.appendChild(memberCard);
+
+    // add destination
+    const addCard = el('div','tp-card');
+    addCard.innerHTML = `<h2><span class="num">+</span> Suggest a destination</h2>`;
+    const nameRow = el('div','tp-row');
+    const fName = field('Destination','e.g. Asheville, NC');
+    const fAirport = field('Airport code (optional)','e.g. AVL');
+    fAirport.input.style.textTransform='uppercase';
+    fAirport.input.maxLength = 3;
+    nameRow.appendChild(fName.wrap); nameRow.appendChild(fAirport.wrap);
+    addCard.appendChild(nameRow);
+    const row = el('div','tp-row');
+    const fStart = dateField('Trip start', todayISO(30));
+    const fEnd = dateField('Trip end', todayISO(37));
+    row.appendChild(fStart.wrap); row.appendChild(fEnd.wrap);
+    addCard.appendChild(row);
+    const fNotes = field('Why this place (optional)','e.g. hiking + breweries, everyone loved it last time');
+    addCard.appendChild(fNotes.wrap);
+    const addBtn = el('button','tp-btn','Add destination');
+    addBtn.onclick = ()=>{
+      if(!fName.input.value.trim()||!fStart.input.value||!fEnd.input.value) return;
+      if(fEnd.input.value < fStart.input.value){ setState({error:'Trip end date is before the start date.'}); return; }
+      addDestination(fName.input.value.trim(), fStart.input.value, fEnd.input.value, fNotes.input.value.trim(), fAirport.input.value.trim());
+      fName.input.value=''; fNotes.input.value=''; fAirport.input.value='';
+    };
+    addCard.appendChild(addBtn);
+    wrap.appendChild(addCard);
+
+    // suggest destinations based on home cities
+    const suggestCard = el('div','tp-card');
+    suggestCard.innerHTML = `<h2><span class="num">✦</span> Not sure where? Get ideas</h2>`;
+    const sDesc = el('div','tp-loading', `Suggests places that are fair to reach from all ${g.members.length} home cities and good to visit on the dates you pick.`);
+    sDesc.style.marginBottom='12px';
+    suggestCard.appendChild(sDesc);
+
+    const sRow = el('div','tp-row');
+    const sStart = dateField('Trip start', state.suggestStartDate);
+    const sEnd = dateField('Trip end', state.suggestEndDate);
+    sRow.appendChild(sStart.wrap); sRow.appendChild(sEnd.wrap);
+    suggestCard.appendChild(sRow);
+
+    const sBtn = el('button','tp-btn', state.suggestLoading ? 'Working…' : 'Find the fairest destinations');
+    sBtn.disabled = state.suggestLoading || g.members.length===0;
+    sBtn.onclick = ()=>{
+      if(!sStart.input.value||!sEnd.input.value) return;
+      if(sEnd.input.value < sStart.input.value){ setState({error:'Trip end date is before the start date.'}); return; }
+      suggestDestinations(sStart.input.value, sEnd.input.value);
+    };
+    suggestCard.appendChild(sBtn);
+
+    if(state.suggestLoading && state.suggestLoadingStage){
+      const stage = el('div','tp-loading', state.suggestLoadingStage);
+      stage.style.marginTop='10px';
+      suggestCard.appendChild(stage);
+    }
+
+    if(state.suggestions.length){
+      const fairId = state.suggestions.find(s=>s.allKnown)?.name;
+      const sList = el('div'); sList.style.marginTop='14px';
+      state.suggestions.forEach(s=>{
+        const sc = el('div','tp-suggest-card');
+        const already = g.destinations.some(d=>d.name.toLowerCase()===s.name.toLowerCase());
+        const isFairest = s.name===fairId;
+        const statLine = s.allKnown
+          ? `Spread <b style="color:var(--paper)">$${s.spread.toLocaleString()}</b> · Total $${s.total.toLocaleString()}`
+          : (s.known && s.known.length ? 'Partial pricing' : 'Pricing unavailable');
+        const left = el('div');
+        left.innerHTML = `<h4>${escapeHtml(s.name)} ${isFairest ? '<span class="tp-best-badge" style="margin-left:6px;">🏆 MOST FAIR</span>' : ''}</h4>
+          <p>${escapeHtml(s.reason||'')}</p>
+          <p class="mono" style="margin-top:5px;font-size:11.5px;">${statLine}</p>`;
+        sc.appendChild(left);
+        const aBtn = el('button','tp-btn small', already ? 'Added' : 'Add to trip');
+        aBtn.disabled = already;
+        aBtn.style.flexShrink = '0';
+        aBtn.onclick = ()=> addSuggestion(s, state.suggestStartDate, state.suggestEndDate);
+        sc.appendChild(aBtn);
+        sList.appendChild(sc);
+      });
+      suggestCard.appendChild(sList);
+    }
+    wrap.appendChild(suggestCard);
+
+    // destinations ranked by fairness first (smallest gap between cheapest and priciest flight),
+    // total group cost as the tiebreaker.
+    const destSection = el('div');
+    const heading = el('div','tp-card');
+    heading.innerHTML = `<h2><span class="num">⚖</span> Ranked by fairness</h2>`;
+    const rankNote = el('div','tp-loading','Sorted by the smallest gap between the cheapest and most expensive flight in the group — total cost breaks ties.');
+    rankNote.style.marginBottom = g.destinations.length ? '2px' : '0';
+    heading.appendChild(rankNote);
+    if(state.error){ heading.appendChild(el('div','tp-err', state.error)); }
+    if(g.destinations.length===0){
+      heading.appendChild(el('div','tp-empty','No destinations yet — add one above, or find fair ones automatically.'));
+    }
+    destSection.appendChild(heading);
+
+    const ranked = g.destinations.map(d=>{
+      const priced = g.members.map(m=>{
+        const rec = g.estimates[d.id+':'+m.id];
+        return {memberId: m.id, price: rec ? rec.price : null};
+      });
+      const stats = fairnessStats(priced, g.members.length);
+      const prices = g.members.map(m=>{
+        const rec = g.estimates[d.id+':'+m.id];
+        return {member:m, price: rec ? rec.price : null, source: rec ? rec.source : null, duration: rec ? rec.duration : null, stops: rec ? rec.stops : null};
+      });
+      return {dest:d, prices, ...stats};
+    });
+    ranked.sort((a,b)=>{
+      if(a.allKnown && !b.allKnown) return -1;
+      if(!a.allKnown && b.allKnown) return 1;
+      if(a.allKnown && b.allKnown) return a.spread - b.spread;
+      return 0;
+    });
+    const fairestId = ranked.find(r=>r.allKnown)?.dest.id;
+
+    ranked.forEach(r=>{
+      destSection.appendChild(renderDestCard(r, g, fairestId));
+    });
+
+    wrap.appendChild(destSection);
+    return wrap;
+  }
+
+  function renderDestCard(r, g, fairestId){
+    const d = r.dest;
+    const card = el('div','tp-dest-card');
+    const isFairest = d.id===fairestId;
+    const photo = el('div','tp-dest-photo');
+    photo.style.background = destGradient(d.id);
+    photo.innerHTML = `${isFairest ? '<div class="tp-best-badge">MOST FAIR</div>' : ''}
+      <div class="tp-dest-photo-text">
+        <h3 class="disp">${escapeHtml(d.name)}</h3>
+        <div class="tp-season">${formatDateRange(d.startDate, d.endDate)}${d.notes ? ' · '+escapeHtml(d.notes) : ''}</div>
+      </div>`;
+    card.appendChild(photo);
+
+    const body = el('div','tp-dest-body');
+    body.appendChild(diagram(r, g));
+
+    const list = el('div','tp-price-list');
+    r.prices.forEach(p=>{
+      const row = el('div','tp-price-row');
+      const nameLine = `<span class="tp-avatar" style="width:16px;height:16px;font-size:8.5px;background:${avatarColor(p.member.id)}">${initials(p.member.name)}</span> ${escapeHtml(p.member.name)}`;
+      const flightNote = (p.source==='real' && p.duration!=null) ? formatFlightNote(p.duration, p.stops) : '';
+      const left = el('div','tp-price-name');
+      left.innerHTML = flightNote
+        ? `<div style="display:flex;flex-direction:column;gap:2px;"><span style="display:flex;align-items:center;gap:7px;">${nameLine}</span><span class="tp-src-tag" style="opacity:.6;margin-left:23px;">${flightNote}</span></div>`
+        : nameLine;
+      const right = el('div','tp-price-val');
+      if(p.price!=null){
+        const tagText = p.source==='real' ? 'real' : (p.source==='manual' ? 'you set' : 'est');
+        const tagColor = p.source==='real' ? 'var(--green)' : (p.source==='manual' ? 'var(--coral-deep)' : 'var(--paper-dim)');
+        right.innerHTML = `$<input class="tp-price-input" type="number" value="${p.price}"/> <span class="tp-src-tag" style="color:${tagColor};opacity:${p.source==='real'||p.source==='manual'?1:0.7};">${tagText}</span>`;
+        const inp = right.querySelector('input');
+        inp.onchange = ()=> setManualPrice(d.id, p.member.id, inp.value);
+      } else {
+        right.innerHTML = `<span style="color:var(--paper-dim)">—</span>`;
+      }
+      row.appendChild(left); row.appendChild(right);
+      list.appendChild(row);
+    });
+    body.appendChild(list);
+    card.appendChild(body);
+
+    const totalsWrap = el('div');
+    const totals = el('div','tp-totals');
+    const totalStr = r.known.length ? ('$'+r.total.toLocaleString()+ (r.allKnown?'':' (partial)')) : '—';
+    const spreadStr = r.spread!=null ? '$'+r.spread.toLocaleString() : '—';
+    const statsBox = el('div'); statsBox.style.display='flex'; statsBox.style.gap='22px';
+    statsBox.innerHTML = `<div><div class="tp-total-label">Fairness spread</div><div class="tp-total-num" style="font-size:17px;">${spreadStr}</div></div>
+      <div><div class="tp-total-label">Group total</div><div class="tp-total-num" style="font-size:17px;">${totalStr}</div></div>`;
+    totals.appendChild(statsBox);
+    const btn = el('button','tp-btn small', state.busyDest===d.id ? 'Pricing…' : 'Get flight prices');
+    btn.disabled = state.busyDest===d.id;
+    btn.onclick = ()=> estimateForDestination(d);
+    const rmBtn = el('button','tp-btn ghost small','Remove');
+    rmBtn.style.marginLeft='8px';
+    rmBtn.onclick = ()=> removeDestination(d.id);
+    const btnWrap = el('div'); btnWrap.style.display='flex';
+    btnWrap.appendChild(btn); btnWrap.appendChild(rmBtn);
+    totals.appendChild(btnWrap);
+    totalsWrap.appendChild(totals);
+
+    if(r.allKnown){
+      const maxPayer = r.prices.find(p=>p.price===r.max);
+      if(maxPayer){
+        const note = el('div','tp-src-tag', `${escapeHtml(maxPayer.member.name)} pays the most, at $${r.max.toLocaleString()}`);
+        note.style.padding = '0 18px 12px';
+        totalsWrap.appendChild(note);
+      }
+    }
+    card.appendChild(totalsWrap);
+
+    return card;
+  }
+
+  function diagram(r, g){
+    const wrap = el('div','tp-diagram');
+    const n = g.members.length;
+    const size = 150, cx=75, cy=75, R=58;
+    let lines = '', dots = '';
+    const maxP = Math.max(1, ...r.prices.map(p=>p.price||0));
+    r.prices.forEach((p,i)=>{
+      const angle = (i/n) * Math.PI*2 - Math.PI/2;
+      const x = cx + R*Math.cos(angle);
+      const y = cy + R*Math.sin(angle);
+      let color = 'rgba(18,54,69,0.16)';
+      let w = 1;
+      if(p.price!=null){
+        const ratio = p.price/maxP;
+        w = 1.5 + ratio*2.5;
+        color = ratio > 0.7 ? '#FF7A59' : ratio > 0.4 ? '#E8A33D' : '#14818F';
+      }
+      lines += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="${color}" stroke-width="${w}" stroke-linecap="round"/>`;
+      dots += `<circle cx="${x}" cy="${y}" r="4" fill="${p.price!=null?color:'rgba(18,54,69,0.2)'}" stroke="#fff" stroke-width="1.5"/>`;
+    });
+    wrap.innerHTML = `<svg viewBox="0 0 ${size} ${size}" width="100%" height="100%">
+      ${lines}
+      <circle cx="${cx}" cy="${cy}" r="11" fill="#FFFFFF" stroke="#123645" stroke-width="1.5"/>
+      <text x="${cx}" y="${cy}" font-size="11" text-anchor="middle" dominant-baseline="central">✈️</text>
+      ${dots}
+    </svg>`;
+    return wrap;
+  }
+
+  function escapeHtml(s){
+    const d = document.createElement('div'); d.textContent = s; return d.innerHTML;
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
