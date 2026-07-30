@@ -1,0 +1,82 @@
+name: Run Backend
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: Branch to check out and run
+        required: true
+        default: main
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    # Secrets (SERPAPI_KEY, ANTHROPIC_API_KEY, DATABASE_URL) live on this
+    # environment, not as plain repo secrets -- Render's GitHub integration
+    # created it.
+    environment: main - flight-price-backend
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - run: npm ci
+
+      - name: Boot server with real secrets
+        env:
+          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          node server.js &
+          SERVER_PID=$!
+          for i in $(seq 1 15); do
+            curl -sf http://localhost:3000/health >/dev/null && break
+            sleep 1
+          done
+          curl -sf http://localhost:3000/health
+          curl -sf -o /dev/null http://localhost:3000/
+
+          echo "--- /api/price ---"
+          curl -sf "http://localhost:3000/api/price?from=DEN&to=AUS&depart=2027-03-14&ret=2027-03-21"
+
+          kill $SERVER_PID
+
+  deploy:
+    needs: smoke-test
+    runs-on: ubuntu-latest
+    # RENDER_API_KEY / RENDER_SERVICE_ID also live on this environment.
+    environment: main - flight-price-backend
+    steps:
+      - name: Point service at branch and deploy
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
+          BRANCH: ${{ inputs.branch }}
+        run: |
+          # Switch the service's connected branch. Render auto-deploys on
+          # push to whatever branch is set here, so this also changes what
+          # future pushes will deploy -- not just this one run.
+          curl -sf -X PATCH "https://api.render.com/v1/services/${RENDER_SERVICE_ID}" \
+            -H "Authorization: Bearer ${RENDER_API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d "{\"branch\": \"${BRANCH}\"}"
+
+          echo "--- triggering deploy ---"
+          DEPLOY=$(curl -sf -X POST "https://api.render.com/v1/services/${RENDER_SERVICE_ID}/deploys" \
+            -H "Authorization: Bearer ${RENDER_API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d '{"clearCache": "do_not_clear"}')
+          echo "$DEPLOY"
+
+          DEPLOY_ID=$(echo "$DEPLOY" | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4)
+          echo "Deploy started: https://dashboard.render.com/web/${RENDER_SERVICE_ID}/deploys/${DEPLOY_ID}"
