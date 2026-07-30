@@ -1,7 +1,7 @@
 {
-  "name": "flight-price-backend",
+  "name": "meet-halfway",
   "version": "1.0.0",
-  "description": "Small API that fetches real Google Flights round-trip prices via SerpApi, for the friend-group trip planner app.",
+  "description": "Meet Halfway -- fair, in-season trip planning for a friend group, with real flight prices and AI destination suggestions.",
   "main": "server.js",
   "type": "commonjs",
   "scripts": {

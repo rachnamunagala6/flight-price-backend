@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: flight-price-backend
+    name: meet-halfway
     runtime: node
     plan: free
     rootDir: backend
